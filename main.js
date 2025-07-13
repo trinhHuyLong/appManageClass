@@ -299,10 +299,8 @@ ipcMain.handle(
         student.attendances.sort(); // Sắp xếp theo thứ tự thời gian
 
         // Cập nhật tổng tiền nếu là tháng hiện tại
-        if (month === "monthCurrent") {
-          student.totalMoney =
-            (student.totalMoney || 0) + cls.month.monthCurrent.moneyPerLesson;
-        }
+        student.totalMoney =
+          (student.totalMoney || 0) + cls.month.monthCurrent.moneyPerLesson;
       }
     } else if (action === "remove") {
       // Xóa ngày điểm danh
@@ -311,12 +309,10 @@ ipcMain.handle(
         student.attendances.splice(index, 1);
 
         // Cập nhật tổng tiền nếu là tháng hiện tại
-        if (month === "monthCurrent") {
-          student.totalMoney = Math.max(
-            0,
-            (student.totalMoney || 0) - cls.month.monthCurrent.moneyPerLesson
-          );
-        }
+        student.totalMoney = Math.max(
+          0,
+          (student.totalMoney || 0) - cls.month.monthCurrent.moneyPerLesson
+        );
       }
     }
 

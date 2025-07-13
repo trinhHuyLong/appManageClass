@@ -71,7 +71,6 @@ const handleSaveClassClick = async () => {
   }
 
   try {
-    showLoading(true);
     await ipcRenderer.invoke("add-class", name, money);
     clearInput(elements.input);
     clearInput(elements.moneyPerLesson);
@@ -80,8 +79,6 @@ const handleSaveClassClick = async () => {
     loadClasses();
   } catch (error) {
     showError(error.message);
-  } finally {
-    showLoading(false);
   }
 };
 
@@ -137,7 +134,6 @@ const loadAddStudentForm = (className) => {
     }
 
     try {
-      showLoading(true);
       await ipcRenderer.invoke(
         "add-student",
         className,
@@ -151,8 +147,6 @@ const loadAddStudentForm = (className) => {
         error.message,
         document.getElementById("new-student-name").parentElement
       );
-    } finally {
-      showLoading(false);
     }
   };
 };
@@ -210,7 +204,6 @@ const loadClasses = async () => {
   toggleElement(elements.btnAdd, true);
 
   try {
-    showLoading(true);
     const classList = await ipcRenderer.invoke("get-classes");
 
     elements.container.innerHTML = `
@@ -227,8 +220,6 @@ const loadClasses = async () => {
     elements.container.appendChild(renderClassList(classList));
   } catch (error) {
     showError("Lỗi khi tải danh sách lớp học: " + error.message);
-  } finally {
-    showLoading(false);
   }
 };
 
@@ -322,7 +313,6 @@ const loadClassDetail = async (className) => {
   currentView = className;
 
   try {
-    // showLoading(true);
     const cls = await ipcRenderer.invoke("get-class", className);
     if (!cls) throw new Error("Không tìm thấy lớp học");
 
@@ -493,7 +483,6 @@ const loadClassDetail = async (className) => {
         }
 
         try {
-          showLoading(true);
           await ipcRenderer.invoke(
             "update-class",
             className,
@@ -504,8 +493,6 @@ const loadClassDetail = async (className) => {
           loadClassDetail(newName);
         } catch (error) {
           showError(error.message);
-        } finally {
-          showLoading(false);
         }
       };
     };
@@ -581,14 +568,11 @@ const loadClassDetail = async (className) => {
         }
 
         try {
-          showLoading(true);
           await ipcRenderer.invoke("add-note", className, note, month);
           showSuccess("Đã thêm ghi chú thành công!");
           loadClassDetail(className);
         } catch (error) {
           showError(error.message);
-        } finally {
-          showLoading(false);
         }
       };
     };
@@ -601,15 +585,12 @@ const loadClassDetail = async (className) => {
   } catch (error) {
     showError("Lỗi khi tải thông tin lớp học: " + error.message);
     loadClasses();
-  } finally {
-    // showLoading(false);
   }
 };
 
 // Student detail functions
 const loadStudentDetail = async (className, studentName, month) => {
   try {
-    showLoading(true);
     const student = await ipcRenderer.invoke(
       "get-student-detail",
       className,
@@ -825,7 +806,6 @@ const loadStudentDetail = async (className, studentName, month) => {
       }
 
       try {
-        showLoading(true);
         const formattedDate = dayjs(selectedDate).format("YYYY-MM-DD");
 
         // Kiểm tra ngày đã tồn tại
@@ -850,7 +830,6 @@ const loadStudentDetail = async (className, studentName, month) => {
       } catch (error) {
         showError(error.message);
       } finally {
-        showLoading(false);
         dateInput.value = "";
       }
     };
@@ -869,7 +848,6 @@ const loadStudentDetail = async (className, studentName, month) => {
 
         if (confirm(`Xác nhận xóa điểm danh ngày ${dateToDelete}?`)) {
           try {
-            showLoading(true);
             await ipcRenderer.invoke(
               "update-student-attendance",
               className,
@@ -883,8 +861,6 @@ const loadStudentDetail = async (className, studentName, month) => {
             loadStudentDetail(className, studentName, month);
           } catch (error) {
             showError(error.message);
-          } finally {
-            showLoading(false);
           }
         }
       };
@@ -915,8 +891,6 @@ const loadStudentDetail = async (className, studentName, month) => {
       }
 
       try {
-        showLoading(true);
-
         // Cập nhật tên nếu có thay đổi
         if (newName !== studentName) {
           await ipcRenderer.invoke(
@@ -944,8 +918,6 @@ const loadStudentDetail = async (className, studentName, month) => {
         loadStudentDetail(className, newName, month);
       } catch (error) {
         showError(error.message);
-      } finally {
-        showLoading(false);
       }
     };
 
@@ -984,8 +956,6 @@ const loadStudentDetail = async (className, studentName, month) => {
   } catch (error) {
     showError("Lỗi khi tải thông tin học sinh: " + error.message);
     loadClasses();
-  } finally {
-    showLoading(false);
   }
 };
 
@@ -1064,7 +1034,6 @@ const setupEditableMoneyCells = (className, month) => {
         if (!value) return;
 
         try {
-          showLoading(true);
           const result = Function('"use strict";return (' + value + ")")();
           if (isNaN(result)) throw new Error("Giá trị không hợp lệ");
 
@@ -1080,8 +1049,6 @@ const setupEditableMoneyCells = (className, month) => {
         } catch (error) {
           showError("Giá trị không hợp lệ: " + error.message);
           td.innerHTML = `${currentValue.toLocaleString()} VNĐ`;
-        } finally {
-          showLoading(false);
         }
       };
 

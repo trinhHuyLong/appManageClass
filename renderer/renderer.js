@@ -264,11 +264,19 @@ const renderStudentTable = (students, className, month) => {
         <td class="px-6 py-4 border-b border-gray-200 text-center text-gray-600">
           ${s.attendances?.length || 0}
         </td>
-        <td class="px-6 py-4 border-b border-gray-200 text-center font-medium text-blue-600 editable-money-cell" 
+        <td class="px-6 py-4 border-b border-gray-200 text-center font-medium text-blue-600">
+          ${s.totalMoney || 0} VNĐ
+        </td>
+        <td class="px-6 py-4 border-b border-gray-200 text-center font-medium text-blue-600 editable-money-cell data-class="${className}" 
+            data-student="${s.name}" 
+            data-field="moneyDocument"">
+          ${s.moneyDocument || 0} VNĐ
+        </td>
+        <td class="px-6 py-4 border-b border-gray-200 text-center font-medium text-blue-600" 
             data-class="${className}" 
             data-student="${s.name}" 
             data-field="totalMoney">
-          ${(s.totalMoney || 0).toLocaleString()} VNĐ
+          ${(s.totalMoney + s.moneyDocument || 0).toLocaleString()} VNĐ
         </td>
         <td class="px-6 py-4 border-b border-gray-200">
           ${
@@ -374,6 +382,8 @@ const loadClassDetail = async (className) => {
                 <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Điểm danh</th>
                 <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Số điện thoại</th>
                 <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Số buổi</th>
+                <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Tiền học</th>
+                <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Tiền tài liệu</th>
                 <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Tổng tiền</th>
                 <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Ghi chú</th>
                 <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Thao tác</th>
@@ -649,6 +659,13 @@ const loadStudentDetail = async (className, studentName, month) => {
               }</p>
               <p><span class="font-medium">Tổng học phí:</span> ${(
                 student.totalMoney || 0
+              ).toLocaleString()} VNĐ</p>
+              <p><span class="font-medium">Tiền tài liệu:</span> ${(
+                student.moneyDocument || 0
+              ).toLocaleString()} VNĐ</p>
+              <p><span class="font-medium">Tổng tiền:</span> ${(
+                (Number(student.totalMoney) || 0) +
+                (Number(student.moneyDocument) || 0)
               ).toLocaleString()} VNĐ</p>
             </div>
           </div>
@@ -1022,6 +1039,7 @@ const setupEditableMoneyCells = (className, month) => {
     td.addEventListener("click", async () => {
       const studentName = td.dataset.student;
       const currentValue = parseInt(td.textContent.replace(/[^0-9]/g, "")) || 0;
+      const field = td.dataset.field;
 
       const input = document.createElement("input");
       input.type = "text";
@@ -1041,7 +1059,7 @@ const setupEditableMoneyCells = (className, month) => {
             "update-student-field",
             className,
             studentName,
-            "totalMoney",
+            field,
             Math.round(result),
             month
           );

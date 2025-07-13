@@ -32,6 +32,8 @@ function createWindow() {
     icon: path.join(__dirname, "assets", "icon.png"),
   });
 
+  win.maximize();
+
   win.loadFile(path.join(__dirname, "renderer", "index.html"));
 
   // Chỉ mở DevTools trong môi trường development
@@ -162,6 +164,7 @@ ipcMain.handle("add-student", (event, className, studentName, mobile) => {
       name: studentName,
       mobile: mobile || "",
       totalMoney: 0,
+      moneyDocument: 0,
       notes: [],
       attendances: [],
     });

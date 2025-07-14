@@ -279,7 +279,9 @@ const renderStudentTable = (students, className, month) => {
             data-class="${className}" 
             data-student="${s.name}" 
             data-field="totalMoney">
-          ${(s.totalMoney + s.moneyDocument || 0).toLocaleString()} VNĐ
+          ${(
+            Number(s.totalMoney || 0) + Number(s.moneyDocument || 0)
+          ).toLocaleString()} VNĐ
         </td>
         <td class="px-6 py-4 border-b border-gray-200">
           ${

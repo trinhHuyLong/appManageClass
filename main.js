@@ -49,7 +49,7 @@ const checkAndRotateMonths = () => {
 
   classes.forEach((cls) => {
     // Kiểm tra nếu đã sang tháng mới
-    if (cls.monthTag !== currentMonth) {
+    if (cls.monthTag === currentMonth) {
       cls.totalMoney = 0;
       // Đẩy dữ liệu cũ xuống các tháng trước
       cls.month = {
@@ -74,6 +74,7 @@ const initNewMonth = (monthTag, monthCurrent) => ({
     name: s.name,
     mobile: s.mobile || "",
     totalMoney: 0, // Reset tổng tiền
+    moneyDocument: 0, // Reset tiền tài liệu
     notes: [], // Reset ghi chú
     attendances: [], // Reset điểm danh
   })),

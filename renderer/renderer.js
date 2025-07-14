@@ -189,6 +189,9 @@ const renderClassList = (classList) => {
             <i class="fas fa-money-bill-wave mr-1"></i>
             Học phí: <span class="font-medium">${cls.month.monthCurrent.moneyPerLesson.toLocaleString()} VNĐ/buổi</span>
           </p>
+          <p class="text-gray-900 mt-1 font-semibold text-[18px]">
+            Tổng: <span class="font-medium text-gray-600">${cls.totalMoney.toLocaleString()} VNĐ</span>
+          </p>
         </div>
       </div>
     `;

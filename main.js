@@ -50,6 +50,7 @@ const checkAndRotateMonths = () => {
   classes.forEach((cls) => {
     // Kiểm tra nếu đã sang tháng mới
     if (cls.monthTag !== currentMonth) {
+      cls.totalMoney = 0;
       // Đẩy dữ liệu cũ xuống các tháng trước
       cls.month = {
         monthCurrent: initNewMonth(currentMonth, cls.month.monthCurrent), // Khởi tạo tháng mới
@@ -109,6 +110,7 @@ ipcMain.handle("add-class", (event, className, moneyPerLesson) => {
   classes.push({
     name: className,
     monthTag: today.getMonth(),
+    totalMoney: 0,
     month: {
       monthCurrent: {
         students: [],
@@ -304,6 +306,7 @@ ipcMain.handle(
         // Cập nhật tổng tiền nếu là tháng hiện tại
         student.totalMoney =
           (student.totalMoney || 0) + cls.month.monthCurrent.moneyPerLesson;
+        cls.totalMoney += cls.month.monthCurrent.moneyPerLesson; // Cập nhật tổng tiền của lớp
       }
     } else if (action === "remove") {
       // Xóa ngày điểm danh
@@ -316,6 +319,7 @@ ipcMain.handle(
           0,
           (student.totalMoney || 0) - cls.month.monthCurrent.moneyPerLesson
         );
+        cls.totalMoney -= cls.month.monthCurrent.moneyPerLesson; // Cập nhật tổng tiền của lớp
       }
     }
 
@@ -342,9 +346,11 @@ ipcMain.handle(
     if (isChecked && attendanceIndex === -1) {
       student.attendances.push(today);
       student.totalMoney += cls.month.monthCurrent.moneyPerLesson;
+      cls.totalMoney += cls.month.monthCurrent.moneyPerLesson; // Cập nhật tổng tiền của lớp
     } else if (!isChecked && attendanceIndex !== -1) {
       student.attendances.splice(attendanceIndex, 1);
       student.totalMoney -= cls.month.monthCurrent.moneyPerLesson;
+      cls.totalMoney -= cls.month.monthCurrent.moneyPerLesson; // Cập nhật tổng tiền của lớp
     }
 
     store.set("classes", classes);

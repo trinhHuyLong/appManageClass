@@ -170,6 +170,7 @@ ipcMain.handle("add-student", (event, className, studentName, mobile) => {
       moneyDocument: 0,
       notes: [],
       attendances: [],
+      payment: 0,
     });
     store.set("classes", classes);
   }

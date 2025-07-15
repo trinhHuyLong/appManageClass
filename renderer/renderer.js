@@ -275,12 +275,17 @@ const renderStudentTable = (students, className, month) => {
             data-field="moneyDocument"">
           ${s.moneyDocument || 0} VNĐ
         </td>
-        <td class="px-6 py-4 border-b border-gray-200 text-center font-medium text-blue-600" 
+        <td class="editable-money-cell px-6 py-4 border-b border-gray-200 text-center font-medium text-blue-600" 
             data-class="${className}" 
             data-student="${s.name}" 
-            data-field="totalMoney">
+            data-field="payment">
+          ${Number(s.payment || 0).toLocaleString()} VNĐ
+        </td>
+        <td class="px-6 py-4 border-b border-gray-200 text-center font-medium text-blue-600" >
           ${(
-            Number(s.totalMoney || 0) + Number(s.moneyDocument || 0)
+            Number(s.totalMoney || 0) +
+            Number(s.moneyDocument || 0) -
+            Number(s.payment || 0)
           ).toLocaleString()} VNĐ
         </td>
         <td class="px-6 py-4 border-b border-gray-200">
@@ -389,7 +394,8 @@ const loadClassDetail = async (className) => {
                 <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Số buổi</th>
                 <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Tiền học</th>
                 <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Tiền tài liệu</th>
-                <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Tổng tiền</th>
+                <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Thanh toán</th>
+                <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Còn nợ</th>
                 <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Ghi chú</th>
                 <th class="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider">Thao tác</th>
               </tr>
@@ -1042,6 +1048,7 @@ const setupDeleteStudentButtons = (className, month) => {
 const setupEditableMoneyCells = (className, month) => {
   document.querySelectorAll(".editable-money-cell").forEach((td) => {
     td.addEventListener("click", async () => {
+      if (td.querySelector("input")) return;
       const studentName = td.dataset.student;
       const currentValue = parseInt(td.textContent.replace(/[^0-9]/g, "")) || 0;
       const field = td.dataset.field;
@@ -1086,7 +1093,9 @@ const setupEditableMoneyCells = (className, month) => {
       td.innerHTML = "";
       td.appendChild(input);
       input.focus();
-      input.select();
+      input.onclick = (e) => {
+        e.stopPropagation(); // Ngăn chặn sự kiện click lan truyền
+      };
     });
   });
 };
